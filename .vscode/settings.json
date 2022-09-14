@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/home/kr/zipcho/ZipchoPythonBackend/zipEnv/bin/python",
+    "atlascode.bitbucket.pipelines.explorerEnabled": true,
+    "python.linting.enabled": false
+}
