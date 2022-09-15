@@ -332,7 +332,7 @@ class fetchBookmarkResponse(serializers.Serializer):
 
 class updateFollowRequest(serializers.Serializer):
    userId = serializers.CharField(max_length=20)    
-   status = serializers.IntegerField()
+   status = serializers.CharField(max_length=20)
 
 class updateFollowResponse(serializers.Serializer):
     message=serializers.CharField(max_length=50)

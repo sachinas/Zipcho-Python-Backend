@@ -533,9 +533,15 @@ def validateUsername(request):
         if data['username'] is None or data['username'] == '' or \
             not re.search(regPattern, data['username']):
             raise Exception("Invalid username format")
-      
+
+        loggedInUser = User.objects.get(id = request.user.id)
+
         if User.objects.filter(username=data['username']).exists():
-            return Response({"status": 409,"message":"Username Already Taken", "data": None})
+            u = User.objects.get(username=data['username'])
+            if u.username == loggedInUser.username : 
+                 return Response({"status": 200,"message":"Success"})
+            else : 
+                return Response({"status": 409,"message":"Username Already Taken", "data": None})
         else : 
             return Response({"status": 200,"message":"Success"})
 
@@ -557,7 +563,7 @@ def validateEmail(request):
     try :
         print("at validateEmail")
         data = request.data 
-
+        loggedInUser = User.objects.get(id = request.user.id)
         regEmail = "^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$" 
 
         if data['email'] is None or data['email'] == '':
@@ -567,7 +573,12 @@ def validateEmail(request):
             raise Exception("Invalid email format")
         
         if User.objects.filter(email=data['email']).exists():
-            return Response({"status": 409,"message":"Email Already Taken", "data": None})
+            u = User.objects.get(email=data['email'])
+            if u.email == loggedInUser.email : 
+                return Response({"status": 200,"message":"Success"})
+            else : 
+                return Response({"status": 409,"message":"Email Already Taken", "data": None})
+
         else : 
             return Response({"status": 200,"message":"Success"})
 

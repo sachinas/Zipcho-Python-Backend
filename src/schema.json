@@ -6375,7 +6375,8 @@
                         "maxLength": 20
                     },
                     "status": {
-                        "type": "integer"
+                        "type": "string",
+                        "maxLength": 20
                     }
                 },
                 "required": [
