@@ -6865,9 +6865,13 @@
                     "username": {
                         "type": "string",
                         "maxLength": 50
+                    },
+                    "type": {
+                        "type": "integer"
                     }
                 },
                 "required": [
+                    "type",
                     "username"
                 ]
             },

@@ -1086,7 +1086,10 @@ def myDashboard(request):
 @permission_classes([IsAuthenticated])
 def myFeeds(request):
     try :
+        global db_time 
+
         print("at myFeeds generation ")
+        db_start = time.time()
         user = User.objects.get(id = request.user.id)
         data = request.data
         page_size = data['page_size']
@@ -1102,6 +1105,9 @@ def myFeeds(request):
         t['userId'] = request.user.id
         t['viewerId'] = request.user.id
         t['status']="myFeeds"
+
+        db_time = time.time() - db_start
+        print("Database lookup | %.4fs" % db_time)
         following = fetchFollowingDetails(t)
         
         if data['page'] is None or data['page'] == '' or \
@@ -1114,6 +1120,8 @@ def myFeeds(request):
 
         for i in range(len(following)):
             
+            posts_start_time = time.time()
+            
             print(f"Fetching Posts of {following[i]['username']}")
             followingId = int(following[i]['userId'])
             user = User.objects.get(id=followingId)
@@ -1125,7 +1133,8 @@ def myFeeds(request):
             profileData = profile.objects.get(user_id = followingId)
        
             posts = map(lambda x : collection_handle.find({"_id":ObjectId(x)}), userPostData)
-           
+            posts_fetch_end_time = time.time()-posts_start_time
+            print("Posts | %.4fs" % posts_fetch_end_time)   
 
             for post in posts :
                 for i in post :

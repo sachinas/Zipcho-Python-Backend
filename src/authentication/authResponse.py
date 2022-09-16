@@ -101,6 +101,7 @@ class loginWithOTPResponse(serializers.Serializer):
 
 class validateUsernameRequest(serializers.Serializer):
    username=serializers.CharField(max_length=50,required=True)  
+   type = serializers.IntegerField()
 
 class validateUsernameResponse(serializers.Serializer):
     status=serializers.IntegerField()
