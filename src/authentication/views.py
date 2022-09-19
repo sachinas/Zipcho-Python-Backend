@@ -529,15 +529,33 @@ def validateUsername(request):
         print("at validateUsername")
         regPattern = "^[a-zA-Z0-9 ]+$"
         data = request.data 
-        
+        type = data['type']
+
         if data['username'] is None or data['username'] == '' or \
             not re.search(regPattern, data['username']):
             raise Exception("Invalid username format")
-      
-        if User.objects.filter(username=data['username']).exists():
-            return Response({"status": 409,"message":"Username Already Taken", "data": None})
-        else : 
-            return Response({"status": 200,"message":"Success"})
+
+        if int(type) == UPDATE_PROFILE:
+            loggedInUser = User.objects.get(id = request.user.id)
+
+            if User.objects.filter(username=data['username']).exists():
+                u = User.objects.get(username=data['username'])
+                if u.username == loggedInUser.username : 
+                    return Response({"status": 200,"message":"Success"})
+                else : 
+                    return Response({"status": 409,"message":"Username Already Taken", "data": None})
+            else : 
+                return Response({"status": 200,"message":"Success"})
+        
+        elif int(type) == SIGNUP:
+            if User.objects.filter(username=data['username']).exists():
+                return Response({"status": 409,"message":"Username Already Taken", "data": None})
+            else : 
+                return Response({"status": 200,"message":"Success"})
+
+        else :  
+            return Response({"status": 400,"message":"Invalid Type Format", "data": None})
+
 
     except Exception as e: 
         print(e)
@@ -557,7 +575,7 @@ def validateEmail(request):
     try :
         print("at validateEmail")
         data = request.data 
-
+        #type = data['type']
         regEmail = "^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$" 
 
         if data['email'] is None or data['email'] == '':
@@ -565,11 +583,13 @@ def validateEmail(request):
 
         if not re.search(regEmail, data['email']):
             raise Exception("Invalid email format")
-        
+    
         if User.objects.filter(email=data['email']).exists():
             return Response({"status": 409,"message":"Email Already Taken", "data": None})
         else : 
             return Response({"status": 200,"message":"Success"})
+
+       
 
     except Exception as e: 
         print(e)

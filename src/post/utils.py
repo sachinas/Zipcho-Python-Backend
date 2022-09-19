@@ -327,11 +327,21 @@ def fetchFollowingData(data):
         message = "Failed while fetchFollowers"
         return 0
 
+import time 
+
 def fetchFollowingDetails(data):
     try :
         print("at fetchFollowingDetails")
+        
+        global mongo_db_time
+
+        db_start = time.time()
+
         db_handle, mongo_client = get_db_handle(mongo_proddbname,mongo_srv)
-        #rint("heree")
+
+        mongo_db_time =  time.time() - db_start
+ 
+        print("MONGO DB Lookup | %.4fs" % mongo_db_time)
         #print(data)
         user = User.objects.get(id=data['userId'])
 

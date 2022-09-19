@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'core',
     'push_notifications',
     'notificationService',
-    'searchService'
+    'searchService',
+    'contest',
 ]
 
 MIDDLEWARE = [
@@ -200,3 +201,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 
 USE_TZ= True
 TIME_ZONE = 'Asia/Kolkata'
+
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]

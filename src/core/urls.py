@@ -28,6 +28,7 @@ urlpatterns = [
     path('home', home, name='home'),
     path('authentication/', include('authentication.urls')),
     path('portfolio/', include('post.urls')),
+    #path('contest/', include('contest.urls')),
     path('notification/', include('notificationService.urls')),
     path('search/', include('searchService.urls')),
     #path('zipchoAdmin/', include('zipchoAdmin.urls')),

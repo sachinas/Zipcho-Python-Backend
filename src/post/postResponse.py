@@ -234,6 +234,7 @@ class dashboardData(serializers.Serializer):
     followers=serializers.IntegerField()
     following=serializers.IntegerField()
     isConnected=serializers.IntegerField()
+    isPrivate=serializers.IntegerField() 
 
 class dashboardRequest(serializers.Serializer):
     viewerId = serializers.CharField(max_length=200)
@@ -332,7 +333,7 @@ class fetchBookmarkResponse(serializers.Serializer):
 
 class updateFollowRequest(serializers.Serializer):
    userId = serializers.CharField(max_length=20)    
-   status = serializers.IntegerField()
+   status = serializers.CharField(max_length=20)
 
 class updateFollowResponse(serializers.Serializer):
     message=serializers.CharField(max_length=50)
