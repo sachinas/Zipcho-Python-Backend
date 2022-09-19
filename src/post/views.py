@@ -9,6 +9,7 @@ from re import match, search
 from authentication.models import User, interactions, profile
 from authentication.utils import getInteractionDetails, getS3FileUrl
 from bson import ObjectId
+#from core.pooling import connection_to_mysql
 from core.settings.base import (mongo_host, mongo_port, mongo_proddbname,
                                 mongo_srv, mongodb_databaseName, password,
                                 username)
@@ -956,8 +957,6 @@ def dashboard(request):
         
         print(f"viewerID {viewerId}")
         
-
-
         user = User.objects.get(id=int(viewerId))
         profileData = profile.objects.get(user_id = int(viewerId))
         finalData = []
@@ -1009,7 +1008,8 @@ def dashboard(request):
             temp['isConnected'] = 0
             
 
-        
+        temp['isPrivate'] = int(user.isPrivate)
+
         finalData.append(temp)
                
         return Response({"status": 200,"message": "Success", "data": finalData}) 
@@ -1118,6 +1118,11 @@ def myFeeds(request):
             not re.search(idPattern, str(data['page_size'])):
             raise Exception("page_size invalid format")
 
+        #print("******************************************************************")
+        #sqlQuery = f"Select * from authentication_user where id = {request.user.id}"
+        #connection_to_mysql(sqlQuery)
+        #print("******************************************************************")
+
         for i in range(len(following)):
             
             posts_start_time = time.time()
@@ -1133,15 +1138,16 @@ def myFeeds(request):
             profileData = profile.objects.get(user_id = followingId)
        
             posts = map(lambda x : collection_handle.find({"_id":ObjectId(x)}), userPostData)
-            posts_fetch_end_time = time.time()-posts_start_time
-            print("Posts | %.4fs" % posts_fetch_end_time)   
+            #posts_end_time = time.time()
+            #posts_fetch_end_time = posts_end_time - db_start
+            #print("Posts | %.4fs" % posts_fetch_end_time)   
 
             for post in posts :
                 for i in post :
                     try : 
                         temp = {}
                         temp['_id'] = str(i['_id'])
-                        print(temp['_id'])
+                        #print(temp['_id'])
 
                         temp['createdById'] = user.id
                         temp['createdByUsername'] = user.username
@@ -1211,7 +1217,10 @@ def myFeeds(request):
             #random.shuffle(finalPostData)
         
         dataToSend = []
-
+        #beforeIsNext = time.time()
+        #totalTimeTaken = beforeIsNext-db_start   
+        #print("Before isNext  | %.4fs" % totalTimeTaken)   
+        
         try : 
             p = Paginator(finalPostData, page_size)
             dataToSend = p.page(page).object_list
@@ -1222,7 +1231,7 @@ def myFeeds(request):
                 "page" : page
                 }
             nextPage = isNextPage(tempIsNext)
-
+        
         except Exception as e : 
             print(e)
             dataToSend = p.page(1).object_list
@@ -1235,6 +1244,10 @@ def myFeeds(request):
 
             nextPage = isNextPage(tempIsNext)
 
+        #afterIsNext = time.time()
+        #totalTimeTaken = afterIsNext-db_start   
+        #print("After isNext  | %.4fs" % totalTimeTaken)   
+        
         return Response({"status": 200,"message":"Success",
                         "data": {"totalPost":len(finalPostData),
                                 "isNextPageAvailable": nextPage,

@@ -121,7 +121,8 @@ def people(request):
                                     usr.username,\
                                     usr.first_name,\
                                     usr.last_name,\
-                                    p.profileImage\
+                                    p.profileImage,\
+                                    usr.isPrivate\
                                 FROM\
                                     authentication_user usr\
                                         JOIN\
@@ -141,7 +142,8 @@ def people(request):
                                 usr.username, \
                                 usr.first_name, \
                                 usr.last_name, \
-                                p.profileImage \
+                                p.profileImage, \
+                                usr.isPrivate\
                             FROM \
                                 authentication_user usr \
                                     JOIN \
@@ -197,6 +199,7 @@ def people(request):
                     interactionData = getInteractionDetails({'userId': int(temp['id'])})
                     temp['canTag'] = int(interactionData[0]['mentions'])
                     temp['canMessage'] = int(interactionData[0]['messages'])
+                    temp['isPrivate'] = basicData[i]['isPrivate']
 
                     finalData.append(temp)
                     print("======================") 
@@ -328,7 +331,13 @@ def photo(request):
                         found = True
                         query2 = "byCategory"
         
-
+        # Adding own user data
+        userPostData = userPost.objects.filter(user_id = loginUser.id)\
+                                        .values_list('post_id', flat=True) \
+                                        .order_by('-id')
+        for jj in range(len(userPostData)):
+            tempPosts.append(ObjectId(userPostData[jj]))
+        
         print(tempPosts)
                         
         print(f"ind : {ind}")
@@ -531,6 +540,13 @@ def video(request):
                         found = True
                         query2 = "byCategory"
             
+        # Adding own user data
+        userPostData = userPost.objects.filter(user_id = loginUser.id)\
+                                        .values_list('post_id', flat=True) \
+                                        .order_by('-id')
+        for jj in range(len(userPostData)):
+            tempPosts.append(ObjectId(userPostData[jj]))
+
 
         print(tempPosts)
                         
@@ -732,7 +748,13 @@ def allSearch(request):
                         tempPosts.append(hp[i]['post_id'])
                         found = True
                         query2 = "byCategory"
-            
+
+        # Adding own user data
+        userPostData = userPost.objects.filter(user_id = loginUser.id)\
+                                        .values_list('post_id', flat=True) \
+                                        .order_by('-id')
+        for jj in range(len(userPostData)):
+            tempPosts.append(ObjectId(userPostData[jj]))
 
         print(tempPosts)
                         

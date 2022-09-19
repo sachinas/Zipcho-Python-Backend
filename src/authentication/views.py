@@ -575,7 +575,7 @@ def validateEmail(request):
     try :
         print("at validateEmail")
         data = request.data 
-        type = data['type']
+        #type = data['type']
         regEmail = "^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$" 
 
         if data['email'] is None or data['email'] == '':
@@ -583,27 +583,13 @@ def validateEmail(request):
 
         if not re.search(regEmail, data['email']):
             raise Exception("Invalid email format")
-        
-        if int(type) == UPDATE_PROFILE:
-            loggedInUser = User.objects.get(id = request.user.id)
-            if User.objects.filter(email=data['email']).exists():
-                u = User.objects.get(email=data['email'])
-                if u.email == loggedInUser.email : 
-                    return Response({"status": 200,"message":"Success"})
-                else : 
-                    return Response({"status": 409,"message":"Email Already Taken", "data": None})
+    
+        if User.objects.filter(email=data['email']).exists():
+            return Response({"status": 409,"message":"Email Already Taken", "data": None})
+        else : 
+            return Response({"status": 200,"message":"Success"})
 
-            else : 
-                return Response({"status": 200,"message":"Success"})
-
-        elif int(type) == SIGNUP:
-            if User.objects.filter(email=data['email']).exists():
-                return Response({"status": 409,"message":"Email Already Taken", "data": None})
-            else : 
-                return Response({"status": 200,"message":"Success"})
-                
-        else :  
-            return Response({"status": 400,"message":"Invalid Type Format", "data": None})
+       
 
     except Exception as e: 
         print(e)

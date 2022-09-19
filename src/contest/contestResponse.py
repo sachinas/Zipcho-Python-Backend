@@ -18,7 +18,8 @@ class createContestRequest(serializers.Serializer):
     start_date_time = serializers.DateTimeField()
     category_id = serializers.CharField(max_length=100)
     contestType_id = serializers.CharField(max_length=200)
-    isPaid = serializers.BooleanField()
+    isPaid = serializers.IntegerField()
+    fee = serializers.DecimalField(decimal_places=2, max_digits=10)
 
 class createContestResponse(serializers.Serializer):
     message=serializers.CharField(max_length=50)

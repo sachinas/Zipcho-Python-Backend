@@ -128,6 +128,7 @@ class getSearchPeopleData(serializers.Serializer):
     isConnected=serializers.IntegerField()
     canTag = serializers.IntegerField()
     canMessage = serializers.IntegerField()
+    isPrivate = serializers.IntegerField()
 
 class searchPeopleResponse(serializers.Serializer):
     message=serializers.CharField(max_length=50)

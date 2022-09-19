@@ -234,6 +234,7 @@ class dashboardData(serializers.Serializer):
     followers=serializers.IntegerField()
     following=serializers.IntegerField()
     isConnected=serializers.IntegerField()
+    isPrivate=serializers.IntegerField() 
 
 class dashboardRequest(serializers.Serializer):
     viewerId = serializers.CharField(max_length=200)
